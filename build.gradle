@@ -28,3 +28,13 @@ dependencies {
     implementation('org.springframework.boot:spring-boot-starter-web')
     testImplementation('org.springframework.boot:spring-boot-starter-test')
 }
+
+task stage(dependsOn: ['build', 'clean'])
+build.mustRunAfter clean
+
+task copyToLib(type: Copy) {
+    into "$buildDir/lib"
+    from(configurations.compile)
+}
+
+stage.dependsOn(copyToLib)
