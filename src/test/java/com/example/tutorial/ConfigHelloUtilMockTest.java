@@ -1,5 +1,6 @@
 package com.example.tutorial;
 
+import com.example.tutorial.util.DBUtil;
 import com.example.tutorial.util.HelloUtil;
 import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;
@@ -15,5 +16,11 @@ public class ConfigHelloUtilMockTest {
     @Primary
     public HelloUtil mockHelloUtil() {
         return Mockito.mock(HelloUtil.class);
+    }
+
+    @Bean
+    @Primary
+    public DBUtil mockDBUtil() {
+        return Mockito.mock(DBUtil.class);
     }
 }

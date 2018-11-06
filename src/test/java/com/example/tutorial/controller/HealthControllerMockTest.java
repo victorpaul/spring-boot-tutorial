@@ -1,7 +1,6 @@
 package com.example.tutorial.controller;
 
-import ch.qos.logback.core.db.dialect.DBUtil;
-import com.example.tutorial.util.HelloUtil;
+import com.example.tutorial.util.DBUtil;
 import org.json.JSONException;
 import org.junit.Assert;
 import org.junit.Test;
@@ -13,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -20,24 +20,22 @@ import org.springframework.test.context.junit4.SpringRunner;
 @ActiveProfiles("mock-hello-util")
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class HelloControllerMockTest {
+public class HealthControllerMockTest {
 
     @Autowired
     private TestRestTemplate rest;
 
     @Autowired
-    private HelloUtil helloUtil;
+    private DBUtil dbUtil;
 
     @Test
-    public void contextLoads() throws JSONException {
+    public void healthCheck() throws JSONException {
 
-        Mockito.when(helloUtil.getGreeting()).thenReturn("Hello mock");
+        Mockito.when(dbUtil.getHealthStatus()).thenReturn("connection to db is established");
 
-        ResponseEntity<String> response = rest.exchange("/api/hello", HttpMethod.GET, new HttpEntity<String>(null, null), String.class);
-
-        String expected = "{\"greeting\":\"Hello mock\"}";
-        JSONAssert.assertEquals(expected, response.getBody(), false);
+        ResponseEntity<String> response = rest.exchange("/api/health", HttpMethod.GET, new HttpEntity<String>(null, null), String.class);
+        Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
+        JSONAssert.assertEquals("{\"db\":\"connection to db is established\"}", response.getBody(), false);
 
     }
-
 }
